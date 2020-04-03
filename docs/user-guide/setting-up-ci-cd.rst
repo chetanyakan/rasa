@@ -87,8 +87,7 @@ Train a Model
    rasa train
 
 Training a model verifies that your NLU pipeline and policy configurations are
-valid and trainable, and it provides a model to test on end-to-end test
-stories. Training a model is also :ref:`part of the continuous deployment
+valid and trainable, and it provides a model to user for test conversations. Training a model is also :ref:`part of the continuous deployment
 process <uploading-a-model>`, as you'll need a model to upload to your server. 
 
 End-to-End Testing
@@ -101,18 +100,17 @@ format, allow you to provide entire conversations and test that, given this
 user input, your model will behave in the expected manner. This is especially
 important as you start introducing more complicated stories from user
 conversations. End-to-end testing is only as thorough and accurate as the test
-cases you write, so you should always update your end-to-end stories
+cases you write, so you should always update your test conversations
 concurrently with your training stories.
 
 .. code-block:: bash
 
-   rasa test --fail-on-prediction-errors
+   rasa test --stories tests/test_stories.md --fail-on-prediction-errors
 
-The default is for ``rasa test`` to look for end-to-end test conversations in
-``tests/``. To ensure the test will fail if any test conversation fails, add 
+To ensure the test will fail if any test conversation fails, add 
 the ``--fail-on-prediction-errors`` flag:
 
-Note: End-to-end stories do **not** execute your action code. You will need to
+Note: End-to-end testing does **not** execute your action code. You will need to
 :ref:`test your action code <testing-action-code>` in a seperate step.
 
 NLU Comparison
