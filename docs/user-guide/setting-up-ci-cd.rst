@@ -34,7 +34,7 @@ Continuous Integration
 ----------------------
 
 Assistants are best improved with frequent, `incremental updates
-<https://rasa.com/docs/rasa-x/user-guide/improve-assistant/#making-incremental-updates>`_.
+<https://rasa.com/docs/rasa-x/user-guide/improve-assistant/>`_.
 No matter how small a change is, you want to be sure that it doesn't introduce
 new problems or negatively impact the performance of your model. Most tests are
 quick enough to run on every change. However, you can set some more
@@ -78,7 +78,7 @@ process <uploading-a-model>`, as you'll need a model to upload to your server.
 End-to-End Testing
 ##################
 
-Testing your trained model on :ref:`end-to-end test stories
+Testing your trained model on :ref:`test conversations
 <end-to-end-testing>` is the best way to have confidence in how your assistant
 will act in certain situations. These stories, written in a modified story
 format, allow you to provide entire conversations and test that, given this
@@ -98,7 +98,9 @@ If you've made significant changes to your NLU training data (such as adding or
 splitting intents, or just adding/changing a lot of examples), you should run a
 :ref:`full NLU evaluation <evaluating-an-nlu-model>`. You'll want to compare
 the performance of the NLU model without your changes to an NLU model with your
-changes. You can do this by running NLU testing in cross-validation mode, or by
+changes. 
+
+You can do this by running NLU testing in cross-validation mode, or by
 training a model on a training set and testing it on a test set. If you use the
 latter approach, it is best to shuffle and split your data every time, as
 opposed to using a static NLU test set, which can easily become outdated. Since
@@ -159,7 +161,7 @@ Example CI/CD pipelines
 As examples, see the CI/CD pipelines for 
 `Sara <https://github.com/RasaHQ/rasa-demo/blob/master/.github/workflows/build_and_deploy.yml>`_,
 the Rasa assistant that you can talk to on this website, and for
-`Carbon Bot <https://github.com/RasaHQ/carbon-bot/blob/master/.github/workflows/model_ci.yml>`_. 
+`Carbon Bot <https://github.com/RasaHQ/carbon-assistant/blob/master/.github/workflows/model_ci.yml>`_. 
 Both use `Github Actions <https://github.com/features/actions>`_ as a CI/CD tool. These examples are far 
 from the only ways to do it; in fact, if you have a CI/CD set up you'd like to share with the
 Rasa community, please post on the `Rasa Forum <https://forum.rasa.com/>`_.
