@@ -50,7 +50,13 @@ Validate Data
 #############
 
 :ref:`Data validation <validate-files>` verifies that there are no mistakes or
-major inconsistencies in your domain file, NLU data, or story data. If ``rasa
+major inconsistencies in your domain file, NLU data, or story data. 
+
+.. code-block:: bash
+
+   rasa data validate --fail-on-warnings
+
+If ``rasa
 data validate`` results in errors, training a model will also fail. By
 including the ``--fail-on-warnings`` flag, the command will also fail on
 warnings about problems that won't prevent training a model, but might indicate
@@ -62,13 +68,23 @@ Validate Stories
 
 :ref:`Story validation <test-story-files-for-conflicts>` checks if you have any
 stories where different bot actions follow from the same dialogue history.
+
+.. code-block:: bash
+
+   rasa data validate --fail-on-warnings --max-history 5
+
 Conflicts between stories will prevent Rasa from learning the correct pattern.
 You can run story validation by passing the ``--max-history`` flag to ``rasa
 data validate``, either in a seperate check or as part of the data validation
-check.
+check. ``--max-history`` should be set to the value of ``max_history`` in your
+config for your memoization policy (which defaults to ``5``).
 
 Train a Model
 #############
+
+.. code-block:: bash
+
+   rasa train
 
 Training a model verifies that your NLU pipeline and policy configurations are
 valid and trainable, and it provides a model to test on end-to-end test
@@ -88,32 +104,50 @@ conversations. End-to-end testing is only as thorough and accurate as the test
 cases you write, so you should always update your end-to-end stories
 concurrently with your training stories.
 
+.. code-block:: bash
+
+   rasa test --fail-on-prediction-errors
+
+The default is for ``rasa test`` to look for end-to-end test conversations in
+``tests/``. To ensure the test will fail if any test conversation fails, add 
+the ``--fail-on-prediction-errors`` flag:
+
 Note: End-to-end stories do **not** execute your action code. You will need to
-test your action code in a seperate step.
+:ref:`test your action code <testing-action-code>` in a seperate step.
 
 NLU Comparison
 ##############
 
 If you've made significant changes to your NLU training data (such as adding or
 splitting intents, or just adding/changing a lot of examples), you should run a
-:ref:`full NLU evaluation <evaluating-an-nlu-model>`. You'll want to compare
+:ref:`full NLU evaluation <nlu-evaluation>`. You'll want to compare
 the performance of the NLU model without your changes to an NLU model with your
 changes. 
 
-You can do this by running NLU testing in cross-validation mode, or by
-training a model on a training set and testing it on a test set. If you use the
-latter approach, it is best to shuffle and split your data every time, as
-opposed to using a static NLU test set, which can easily become outdated. Since
-this can be a fairly resource intensive test, you can set this test to run only
-when a certain tag (e.g. "NLU testing required") is present, or only when
-changes to NLU data or the NLU pipeline were made.
+You can do this by running NLU testing in cross-validation mode:
+
+.. code-block:: bash
+
+   rasa test nlu --cross-validation
+
+or by training a model on a training set and testing it on a test set. If you use the train-test
+set approach, it is best to :ref:`shuffle and split your data <train-test-split>` using ``rasa data split`` every time, as
+opposed to using a static NLU test set, which can easily become outdated. 
+
+Since NLU comparison can be a fairly resource intensive test, you can set this
+test to run only when a certain tag (e.g. "NLU testing required") is present,
+or only when changes to NLU data or the NLU pipeline were made. 
+
+.. _testing-action-code:
 
 Testing Action Code
 ###################
 
 The approach used to test your action code will depend on how it is
 implemented. Whichever method of testing your code you choose, you should
-include running those tests in your CI pipeline as well. 
+include running those tests in your CI pipeline as well. For example, if you
+connect to external API's it is recommended to write unit tests to ensure 
+that those APIs respond as expected to common inputs.
 
 Continuous Deployment
 ---------------------
@@ -139,6 +173,14 @@ make an `API call <https://rasa.com/docs/rasa-x/api/rasa-x-http-api/#tag/Models/
 to tag the uploaded model as ``production`` (or whichever `deployment environment <https://rasa.com/docs/rasa-x/enterprise/deployment-environments/#>`_ you want
 to deploy it to).
 
+For Rasa X, this could look something like:
+
+.. code-block:: bash
+
+   curl -k -F "model=@models/my_model.tar.gz" "https://example.rasa.com/api/projects/default/models?api_token={your_api_token}"
+   curl -X PUT "https://example.rasa.com/api/projects/default/models/my_model/tags/production"
+
+
 However, if your update includes changes to both your model and your action
 code, and these changes depend on each other in any way, you should **not**
 automatically tag the model as ``production``. You will first need to build and
@@ -148,12 +190,12 @@ actions that don't exist in the pre-update action server.
 Deploying your Action Server
 ############################
 
-If you're using a `containerized deployment <https://rasa.com/docs/rasa/user-guide/docker/building-in-docker/#adding-custom-actions>`_
-of your action server, you can automate building a new image, uploading it to
-an image repository, and deploying a new image tag for each update to your
-action code. As noted above, you should be careful with automatically deploying
-a new image tag to production if the action server would be incompatible with
-the current production model.
+If you're using a containerized deployment of your action server, you can
+automate `building a new image <https://rasa.com/docs/rasa/user-guide/docker/building-in-docker/#adding-custom-actions>`_, 
+uploading it to an image repository, and deploying a new image tag for each
+update to your action code. As noted above, you should be careful with
+automatically deploying a new image tag to production if the action server
+would be incompatible with the current production model.
 
 Example CI/CD pipelines
 -----------------------
