@@ -5,7 +5,7 @@
 Setting up CI/CD
 ================
 
-Developping a bot looks a little different than developping a traditional
+Developing a bot looks a little different than developing a traditional
 software application, but that doesn't mean you should abandon software
 development best practices. Setting up CI/CD ensures that incremental updates
 to your bot are improving it, not harming it.
