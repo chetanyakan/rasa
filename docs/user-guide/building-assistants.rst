@@ -156,30 +156,58 @@ For example:
 
 While it's good to test the bot interactively, we should also add end to end test cases that
 can later be included as part of our CI/CD system. End-to-end :ref:`test conversations <end-to-end-testing>`
-include NLU data, so that both components of Rasa can be tested.  Create a file called
-``test_stories.md`` in a subdirectory `tests` with some test cases:
+include NLU data, so that both components of Rasa can be tested. The file 
+``tests/conversation_tests.md`` contains test conversations for the stories defined so far:
 
 .. code-block:: md
+## happy path 1
+* greet: hello there!
+  - utter_greet
+* mood_great: amazing
+  - utter_happy
 
-   ## greet + goodbye
-   * greet: Hi!
-     - utter_greet
-   * bye: Bye
-     - utter_bye
+## happy path 2
+* greet: hello there!
+  - utter_greet
+* mood_great: amazing
+  - utter_happy
+* goodbye: bye-bye!
+  - utter_goodbye
 
-   ## greet + thanks
-   * greet: Hello there
-     - utter_greet
-   * thank: thanks a bunch
-     - utter_noworries
+## sad path 1
+* greet: hello
+  - utter_greet
+* mood_unhappy: not good
+  - utter_cheer_up
+  - utter_did_that_help
+* affirm: yes
+  - utter_happy
 
-   ## greet + thanks + goodbye
-   * greet: Hey
-     - utter_greet
-   * thank: thank you
-     - utter_noworries
-   * bye: bye bye
-     - utter_bye
+## sad path 2
+* greet: hello
+  - utter_greet
+* mood_unhappy: not good
+  - utter_cheer_up
+  - utter_did_that_help
+* deny: not really
+  - utter_goodbye
+
+## sad path 3
+* greet: hi
+  - utter_greet
+* mood_unhappy: very terrible
+  - utter_cheer_up
+  - utter_did_that_help
+* deny: no
+  - utter_goodbye
+
+## say goodbye
+* goodbye: bye-bye!
+  - utter_goodbye
+
+## bot challenge
+* bot_challenge: are you a bot?
+  - utter_iamabot
 
 To test our model against the test file, run the command:
 
