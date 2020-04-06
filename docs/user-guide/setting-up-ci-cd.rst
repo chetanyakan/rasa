@@ -36,7 +36,7 @@ Continuous Integration
 Assistants are best improved with frequent, `incremental updates
 <https://rasa.com/docs/rasa-x/user-guide/improve-assistant/>`_.
 No matter how small a change is, you want to be sure that it doesn't introduce
-new problems or negatively impact the performance of your model. Most tests are
+new problems or negatively impact the performance of your assistant. Most tests are
 quick enough to run on every change. However, you can set some more
 resource-intentsive tests to run only when certain files have been changed or
 when a certain tag is present.
