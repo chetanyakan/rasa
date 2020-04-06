@@ -26,9 +26,12 @@ to your assistant with less manual effort expended on testing and deployment.
 
 This guide will cover **what** should go in a CI/CD pipeline, specific to a
 Rasa project. **How** you implement that pipeline is up to you. There are many
-CI/CD tools out there, and you might already have a preferred one. Many Git
-repository hosting services like Github, Gitlab, and Bitbucket also provide
-their own CI/CD tools that you can make use of. 
+CI/CD tools out there, and you might already have a preferred one. Many Git repository 
+hosting services like Github, Gitlab, and Bitbucket provide
+their own CI/CD tools. It is recommended to incorporate
+your CI/CD pipeline into a Git repository set up, instead of using a seperate service.
+
+
 
 Continuous Integration
 ----------------------
@@ -90,7 +93,7 @@ Training a model verifies that your NLU pipeline and policy configurations are
 valid and trainable, and it provides a model to use for test conversations. Training a model is also :ref:`part of the continuous deployment
 process <uploading-a-model>`, as you'll need a model to upload to your server. 
 
-End-to-End Testing
+Test the Assistant
 ##################
 
 Testing your trained model on :ref:`test conversations
@@ -113,8 +116,8 @@ the ``--fail-on-prediction-errors`` flag:
 Note: End-to-end testing does **not** execute your action code. You will need to
 :ref:`test your action code <testing-action-code>` in a seperate step.
 
-NLU Comparison
-##############
+Compare NLU Performance
+#######################
 
 If you've made significant changes to your NLU training data (such as adding or
 splitting intents, or adding/changing a lot of examples), you should run a
@@ -138,8 +141,8 @@ or only when changes to NLU data or the NLU pipeline were made.
 
 .. _testing-action-code:
 
-Testing Action Code
-###################
+Test Action Code
+################
 
 The approach used to test your action code will depend on how it is
 implemented. Whichever method of testing your code you choose, you should
@@ -166,16 +169,18 @@ Deploying your Rasa Model
 
 You should already have a trained model from running end-to-end testing in your
 CI pipeline. You can set up your pipeline to upload the trained model to your
-Rasa server if you're happy with the CI results. If you're using Rasa X, you can also 
-make an `API call <https://rasa.com/docs/rasa-x/api/rasa-x-http-api/#tag/Models/paths/~1projects~1{project_id}~1models~1{model}~1tags~1{tag}/put>`_ 
-to tag the uploaded model as ``production`` (or whichever `deployment environment <https://rasa.com/docs/rasa-x/enterprise/deployment-environments/#>`_ you want
-to deploy it to).
-
-For Rasa X, this could look something like:
+Rasa server if the CI results are satisfactory. For example, in Rasa X this would look like:
 
 .. code-block:: bash
 
    curl -k -F "model=@models/my_model.tar.gz" "https://example.rasa.com/api/projects/default/models?api_token={your_api_token}"
+
+If you are using Rasa X, you can also `tag the uploaded model <https://rasa.com/docs/rasa-x/api/rasa-x-http-api/#tag/Models/paths/~1projects~1{project_id}~1models~1{model}~1tags~1{tag}/put>`_
+as ``production`` (or whichever `deployment environment <https://rasa.com/docs/rasa-x/enterprise/deployment-environments/#>`_ 
+you want to deploy it to):
+
+.. code-block:: bash
+
    curl -X PUT "https://example.rasa.com/api/projects/default/models/my_model/tags/production"
 
 
@@ -189,8 +194,8 @@ Deploying your Action Server
 ############################
 
 If you're using a containerized deployment of your action server, you can
-automate `building a new image <https://rasa.com/docs/rasa/user-guide/docker/building-in-docker/#adding-custom-actions>`_, 
-uploading it to an image repository, and deploying a new image tag for each
+automate `building a new image and uploading it <https://rasa.com/docs/rasa/user-guide/docker/building-in-docker/#adding-custom-actions>`_, 
+to an image repository for each
 update to your action code. As noted above, you should be careful with
 automatically deploying a new image tag to production if the action server
 would be incompatible with the current production model.
