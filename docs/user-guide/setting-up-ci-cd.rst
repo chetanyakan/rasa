@@ -87,7 +87,7 @@ Train a Model
    rasa train
 
 Training a model verifies that your NLU pipeline and policy configurations are
-valid and trainable, and it provides a model to user for test conversations. Training a model is also :ref:`part of the continuous deployment
+valid and trainable, and it provides a model to use for test conversations. Training a model is also :ref:`part of the continuous deployment
 process <uploading-a-model>`, as you'll need a model to upload to your server. 
 
 End-to-End Testing
@@ -101,7 +101,7 @@ user input, your model will behave in the expected manner. This is especially
 important as you start introducing more complicated stories from user
 conversations. End-to-end testing is only as thorough and accurate as the test
 cases you write, so you should always update your test conversations
-concurrently with your training stories.
+whenever you make changes to your training stories.
 
 .. code-block:: bash
 
@@ -117,7 +117,7 @@ NLU Comparison
 ##############
 
 If you've made significant changes to your NLU training data (such as adding or
-splitting intents, or just adding/changing a lot of examples), you should run a
+splitting intents, or adding/changing a lot of examples), you should run a
 :ref:`full NLU evaluation <nlu-evaluation>`. You'll want to compare
 the performance of the NLU model without your changes to an NLU model with your
 changes. 
@@ -129,7 +129,7 @@ You can do this by running NLU testing in cross-validation mode:
    rasa test nlu --cross-validation
 
 or by training a model on a training set and testing it on a test set. If you use the train-test
-set approach, it is best to :ref:`shuffle and split your data <train-test-split>` using ``rasa data split`` every time, as
+set approach, it is best to :ref:`shuffle and split your data <train-test-split>` using ``rasa data split`` as part of this CI step, as
 opposed to using a static NLU test set, which can easily become outdated. 
 
 Since NLU comparison can be a fairly resource intensive test, you can set this
@@ -166,7 +166,7 @@ Deploying your Rasa Model
 
 You should already have a trained model from running end-to-end testing in your
 CI pipeline. You can set up your pipeline to upload the trained model to your
-Rasa server. If you're using Rasa X, you can also 
+Rasa server if you're happy with the CI results. If you're using Rasa X, you can also 
 make an `API call <https://rasa.com/docs/rasa-x/api/rasa-x-http-api/#tag/Models/paths/~1projects~1{project_id}~1models~1{model}~1tags~1{tag}/put>`_ 
 to tag the uploaded model as ``production`` (or whichever `deployment environment <https://rasa.com/docs/rasa-x/enterprise/deployment-environments/#>`_ you want
 to deploy it to).
