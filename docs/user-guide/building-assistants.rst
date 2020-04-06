@@ -185,7 +185,7 @@ To test our model against the test file, run the command:
 
 .. code-block:: bash
 
-   rasa test --e2e --stories tests/test_stories.md
+   rasa test --stories tests/test_stories.md
 
 The test command will produce a directory named ``results``. It should contain a file
 called ``failed_stories.md``, where any test cases that failed will be printed. It will
